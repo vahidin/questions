@@ -3,6 +3,9 @@
 /* HINT - добавление к запросу индексной подсказки */
 SELECT /*+ INDEX(<table> <имя индекса>) */
 
+--  использовать созданный индекс для чтения записей из таблицы через и ндекс
+SELECT /*+ FIRST_ROWS */ t.empno, t.ename, t.hiredate FROM emp t ORDER BY t.empno;
+
 /* Исключения */
 DECLARE
    l_Out VARCHAR2(1);
