@@ -1,3 +1,4 @@
+/* Сегменты */
 SELECT v.segment_name, 
        v.segment_type, 
        v.bytes/1024 AS kb,
