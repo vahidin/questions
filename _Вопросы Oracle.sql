@@ -47,7 +47,7 @@ BEGIN
 EXCEPTION
    WHEN OTHERS THEN 
      dbms_output.put_line( dbms_utility.format_call_stack || 
-                           '-----------------------------' || CHR(10) || 
+                           '----------------------------' || CHR(10) || 
                            dbms_utility.format_error_backtrace || 
                            dbms_utility.format_error_stack);
 END;
@@ -145,7 +145,7 @@ DECLARE
          ORDER BY t.empno;
         
         l_recCur Cur%ROWTYPE; -- столбцы из курсора
-  BEGIN
+BEGIN
         OPEN Cur;
         LOOP
              FETCH Cur INTO l_recCur;
@@ -157,10 +157,25 @@ DECLARE
                                   TRUNC(l_recCur.hiredate));
          END LOOP;
        CLOSE cur;
-  END;
+END;
 
-/* REF CURSOR rурсорная переменная */
-
+/* REF CURSOR курсорная переменная */
+DECLARE
+  TYPE l_refCur IS REF CURSOR;
+  var_refCur    l_refCur;
+  v_out         SCOTT.EMP%ROWTYPE;
+BEGIN
+  OPEN var_refCur FOR
+    SELECT t.*
+      FROM SCOTT.EMP t;
+  LOOP
+    FETCH var_refCur
+     INTO v_out;
+     EXIT WHEN var_refCur%NOTFOUND;
+    dbms_output.put_line(v_out.empno||' '||v_out.ename||' '||v_out.hiredate);
+  END LOOP;
+  CLOSE var_refCur;
+END;
 
 /* Интервальные промежутки (10мин) */
 
