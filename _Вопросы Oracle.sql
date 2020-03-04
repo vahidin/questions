@@ -1,19 +1,51 @@
 Вопросы Oracle.
 
+/* Информация об инстансе БД */
+SELECT * FROM v$instance;
+
+/* Динамическое представление производительности */
+SELECT * FROM v$undostat;
+
+/* Просмотр сегментов */
+SELECT v.segment_name, 
+       v.segment_type, 
+       v.bytes/1024 AS kb,
+       v.blocks,
+       v.extents,
+       v.initial_extent
+  FROM User_Segments v;
+  
+/* Контекст схемы */
+SELECT 
+        SYS_CONTEXT ( 'userenv', 'AUTHENTICATION_TYPE' ) authent
+      , SYS_CONTEXT ( 'userenv', 'CURRENT_SCHEMA' )      curr_schema
+      , SYS_CONTEXT ( 'userenv', 'CURRENT_USER' )        curr_user
+      , SYS_CONTEXT ( 'userenv', 'CURRENT_USERID' )      current_userid
+      , SYS_CONTEXT ( 'userenv', 'DB_NAME' )             db_name
+      , SYS_CONTEXT ( 'userenv', 'DB_DOMAIN' )           db_domain
+      , SYS_CONTEXT ( 'userenv', 'HOST' )                host
+      , SYS_CONTEXT ( 'userenv', 'IP_ADDRESS' )          ip_address
+      , SYS_CONTEXT ( 'userenv', 'OS_USER' )             os_user
+      , SYS_CONTEXT ( 'userenv', 'GLOBAL_UID')           global_uid
+      , SYS_CONTEXT ( 'userenv', 'SESSION_USER')         session_user
+      , SYS_CONTEXT ( 'userenv', 'SESSION_USERID')       session_userid               
+      , SYS_CONTEXT ( 'userenv', 'SESSIONID')            sessionid
+      , SYS_CONTEXT ( 'userenv', 'SID')                  sid
+FROM    dual;
+
 /* HINT - добавление к запросу индексной подсказки */
 SELECT /*+ INDEX(<table> <имя индекса>) */
-
---  использовать созданный индекс для чтения записей из таблицы через и ндекс
+/* HINT - использовать созданный индекс для чтения записей из таблицы через индекс */
 SELECT /*+ FIRST_ROWS */ t.empno, t.ename, t.hiredate FROM emp t ORDER BY t.empno;
 
 /* Исключения */
 DECLARE
    l_Out VARCHAR2(1);
 BEGIN
-SELECT '11' INTO l_Out FROM dual;
-  dbms_output.put_line(l_Out);
+   SELECT '11' INTO l_Out FROM dual;
+   dbms_output.put_line(l_Out);
 EXCEPTION
-     WHEN OTHERS THEN 
+   WHEN OTHERS THEN 
      dbms_output.put_line( dbms_utility.format_call_stack || 
                            '-----------------------------' || CHR(10) || 
                            dbms_utility.format_error_backtrace || 
@@ -52,30 +84,8 @@ SELECT CHR(34), -- "
        CHR(39), -- '
        CHR(10), -- перевод строки
        ASCII('"') -- код 34
-FROM   dual;
+  FROM dual;
 
--- Информация об инстансе БД
-SELECT * FROM v$instance;
--- Динамическое представление производительности
-SELECT * FROM v$undostat;
-
-/* Контекст схемы */
-SELECT 
-        SYS_CONTEXT ( 'userenv', 'AUTHENTICATION_TYPE' ) authent
-      , SYS_CONTEXT ( 'userenv', 'CURRENT_SCHEMA' )      curr_schema
-      , SYS_CONTEXT ( 'userenv', 'CURRENT_USER' )        curr_user
-      , SYS_CONTEXT ( 'userenv', 'CURRENT_USERID' )      current_userid
-      , SYS_CONTEXT ( 'userenv', 'DB_NAME' )             db_name
-      , SYS_CONTEXT ( 'userenv', 'DB_DOMAIN' )           db_domain
-      , SYS_CONTEXT ( 'userenv', 'HOST' )                host
-      , SYS_CONTEXT ( 'userenv', 'IP_ADDRESS' )          ip_address
-      , SYS_CONTEXT ( 'userenv', 'OS_USER' )             os_user
-      , SYS_CONTEXT ( 'userenv', 'GLOBAL_UID')           global_uid
-      , SYS_CONTEXT ( 'userenv', 'SESSION_USER')         session_user
-      , SYS_CONTEXT ( 'userenv', 'SESSION_USERID')       session_userid               
-      , SYS_CONTEXT ( 'userenv', 'SESSIONID')            sessionid
-      , SYS_CONTEXT ( 'userenv', 'SID')                  sid
-FROM    dual;
 
 /* DECODE (функция декодирования) */
 SELECT t.ename AS "Имя",
@@ -106,6 +116,24 @@ SELECT t.ename AS "Имя",
 13 WARD    SALESMAN  Продавец
 14 ALLEN   SALESMAN  Продавец
 
+/* COALESCE - возвращает первое ненулевое выражение из списка */
+SELECT COALESCE(t.comm, 1) AS comm FROM SCOTT.emp t;
+COMM
+-------
+ 1    1
+ 2  300
+ 3  500
+ 4    1
+ 5 1400
+ 6    1
+ 7    1
+ 8    1
+ 9    1
+10    0
+11    1
+12    1
+13    1
+14    1
 
 /*  Курсор */
 DECLARE
@@ -131,8 +159,11 @@ DECLARE
        CLOSE cur;
   END;
 
---Аналитические функции + Интервальные промежутки (10мин)
-COALESCE(<>, to_date('31.12.9999 23:59:59', 'dd.mm.yyyy hh24:mi:ss'))
+/* REF CURSOR rурсорная переменная */
+
+
+/* Интервальные промежутки (10мин) */
+
 
 /* Предыдущее, Текущее, Следующее  */
 WITH t AS
