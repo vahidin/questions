@@ -271,25 +271,27 @@ BEGIN
         END LOOP;
 END;
 
--- Использование вложенной таблицы (Nested Table)
-DECLARE 
-        TYPE tabl_nt IS TABLE OF NUMBER;
-        iccid_nt tabl_nt := tabl_nt(10,20,30,40,50);
-BEGIN
-        FOR x IN iccid_nt.first..iccid_nt.last LOOP
-            dbms_output.put_line(x ||' '|| iccid_nt(x));
-        END LOOP;
-END; 
 
--- Создать коллекцию типа Вложенной таблицы (Nested Table)
+-- Создать коллекцию типа таблицы
 CREATE OR REPLACE TYPE TEST_NUMBER_TABLE AS TABLE OF NUMBER(20);
--- Выборка из коллекции типа Вложенной таблицы (Nested Table)
+-- Выборка из коллекции типа таблицы
 SELECT  * FROM TEST_NUMBER_TABLE(1,2,3,4,5,1,2);
---CARDINALITY возвращает число элеметов в nested table. Тип возращаемого значения NUMBER.
+--CARDINALITY возвращает число элеметов. Тип возращаемого значения NUMBER.
 SELECT CARDINALITY(TEST_NUMBER_TABLE(1,2,3,4,5,1,2)) AS test_count FROM dual;
 --SET удаляет дубликаты в наборе данных.
 SELECT * FROM TABLE(SET(TEST_NUMBER_TABLE(1,2,3,4,5,1,2)));
 
+/* Использование коллекции типа таблицы */
+DECLARE 
+        TYPE tabl_t IS TABLE OF NUMBER;
+        v_tab_t tabl_t := tabl_t(10,20,30,40,50);
+BEGIN
+        FOR x IN v_tab_t.first..v_tab_t.last LOOP
+            dbms_output.put_line(x ||' '|| v_tab_t(x));
+        END LOOP;
+END; 
+
+/* пример генерации данных */
 WITH t AS (SELECT 'x' AS tex, 2 AS val FROM dual
            UNION ALL SELECT 'y', 3 FROM dual
            UNION ALL SELECT 'z', 4 FROM dual)
