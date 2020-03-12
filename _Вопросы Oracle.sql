@@ -290,6 +290,24 @@ SELECT CARDINALITY(TEST_NUMBER_TABLE(1,2,3,4,5,1,2)) AS test_count FROM dual;
 --SET удаляет дубликаты в наборе данных.
 SELECT * FROM TABLE(SET(TEST_NUMBER_TABLE(1,2,3,4,5,1,2)));
 
+WITH t AS (SELECT 'x' AS tex, 2 AS val FROM dual
+           UNION ALL SELECT 'y', 3 FROM dual
+           UNION ALL SELECT 'z', 4 FROM dual)
+SELECT t.*
+  FROM t, TABLE(SELECT COLLECT(1) FROM dual CONNECT BY LEVEL <= t.value);   
+
+  TEX VAL
+---------
+1 x    2
+2 x    2
+3 y    3
+4 y    3
+5 y    3
+6 z    4
+7 z    4
+8 z    4
+9 z    4
+
 /* Передача массива в Oracle в качестве входного параметра хранимой процедуры. */
 --(1) 
 CREATE OR REPLACE TYPE strings_ct AS TABLE OF VARCHAR2(4000);
