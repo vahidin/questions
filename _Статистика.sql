@@ -10,7 +10,8 @@ SELECT t.table_name,
 BEGIN 
   -- Сбор статистики по таблице.
   dbms_stats.gather_table_stats ('SCOTT','EMP'); 
-
+  dbms_stats.gather_table_stats (USER, 'EMP');
+  
   -- Блокировать статистику для того, чтобы исключить объекты с реально большим количеством неизменных справочников.
   dbms_stats.lock_table_stats ('SCOTT','EMP'); 
   
