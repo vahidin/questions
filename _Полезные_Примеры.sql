@@ -1,6 +1,6 @@
-Полезные_примеры.
+РџРѕР»РµР·РЅС‹Рµ_РїСЂРёРјРµСЂС‹.
 
-/* Конкатенация значений поля без использования wm_concat */
+/* РљРѕРЅРєР°С‚РµРЅР°С†РёСЏ Р·РЅР°С‡РµРЅРёР№ РїРѕР»СЏ Р±РµР· РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ wm_concat */
 select substr(sys_connect_by_path(col1, ','), 2)
 from
 (
@@ -11,7 +11,7 @@ where connect_by_isleaf=1
 connect by prior r=r-1
 start with r=1
 
-/* Агрегация по интервалу времени */
+/* РђРіСЂРµРіР°С†РёСЏ РїРѕ РёРЅС‚РµСЂРІР°Р»Сѓ РІСЂРµРјРµРЅРё */
 select a3.d1, a3.d2, sum(t.val)
   from test2 t,
        (select a1.dt d1, a2.dt d2
@@ -20,7 +20,7 @@ select a3.d1, a3.d2, sum(t.val)
                 from test2
                where mod(to_number(to_char(dt, 'MI')) +
                          to_number(to_char(dt, 'HH24')) * 60,
-                         20) = 0 --20 минут
+                         20) = 0 --20 РјРёРЅСѓС‚
                order by dt)) a1,
                (select dt, rn
             from (select dt, rownum rn
@@ -28,23 +28,23 @@ select a3.d1, a3.d2, sum(t.val)
                       from test2
                      where mod(to_number(to_char(dt, 'MI')) +
                                to_number(to_char(dt, 'HH24')) * 60,
-                               20) = 0 --20 минут
+                               20) = 0 --20 РјРёРЅСѓС‚
                      order by dt))) a2
-        --соединяем записи со сдвигом
+        --СЃРѕРµРґРёРЅСЏРµРј Р·Р°РїРёСЃРё СЃРѕ СЃРґРІРёРіРѕРј
          where a1.rn + 1 = a2.rn
          order by a2.dt) a3
  where t.dt between a3.d1 and a3.d2
  group by a3.d1, a3.d2
---интервал вывода
+--РёРЅС‚РµСЂРІР°Р» РІС‹РІРѕРґР°
 having a3.d1 between 
        to_date('02.01.2012 00:00', 'DD.MM.YYYY HH24:MI') and 
        to_date('02.01.2012 23:59', 'DD.MM.YYYY HH24:MI')
  order by a3.d1;
-Формируем два одинаковых набора дат, упорядоченных по возрастанию, каждый следующий элемент = предыдущий + 20 минут. 
-Соединяем их со сдвигом, получаем последовательные пары интервалов. Суммируем поле val, указываем в условии интервал дат. 
-Результирующий набор фильтруем по интервалу в 1 сутки.
+Р¤РѕСЂРјРёСЂСѓРµРј РґРІР° РѕРґРёРЅР°РєРѕРІС‹С… РЅР°Р±РѕСЂР° РґР°С‚, СѓРїРѕСЂСЏРґРѕС‡РµРЅРЅС‹С… РїРѕ РІРѕР·СЂР°СЃС‚Р°РЅРёСЋ, РєР°Р¶РґС‹Р№ СЃР»РµРґСѓСЋС‰РёР№ СЌР»РµРјРµРЅС‚ = РїСЂРµРґС‹РґСѓС‰РёР№ + 20 РјРёРЅСѓС‚. 
+РЎРѕРµРґРёРЅСЏРµРј РёС… СЃРѕ СЃРґРІРёРіРѕРј, РїРѕР»СѓС‡Р°РµРј РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅС‹Рµ РїР°СЂС‹ РёРЅС‚РµСЂРІР°Р»РѕРІ. РЎСѓРјРјРёСЂСѓРµРј РїРѕР»Рµ val, СѓРєР°Р·С‹РІР°РµРј РІ СѓСЃР»РѕРІРёРё РёРЅС‚РµСЂРІР°Р» РґР°С‚. 
+Р РµР·СѓР»СЊС‚РёСЂСѓСЋС‰РёР№ РЅР°Р±РѕСЂ С„РёР»СЊС‚СЂСѓРµРј РїРѕ РёРЅС‚РµСЂРІР°Р»Сѓ РІ 1 СЃСѓС‚РєРё.
 
-/* Удаление полных дубликатов */
+/* РЈРґР°Р»РµРЅРёРµ РїРѕР»РЅС‹С… РґСѓР±Р»РёРєР°С‚РѕРІ */
 delete from emp
  where rowid in 
  (select rwd
@@ -64,10 +64,10 @@ delete from emp
                              salary) rn
               from emp)
  where rn > 1)
-Группируем с помощью аналитической функции PARTITION OVER по всем полям (полный дубликат), нумеруем записи в группах. 
-Отбираем все, у которых порядковый номер больше 1 и удаляем по ROWID
+Р“СЂСѓРїРїРёСЂСѓРµРј СЃ РїРѕРјРѕС‰СЊСЋ Р°РЅР°Р»РёС‚РёС‡РµСЃРєРѕР№ С„СѓРЅРєС†РёРё PARTITION OVER РїРѕ РІСЃРµРј РїРѕР»СЏРј (РїРѕР»РЅС‹Р№ РґСѓР±Р»РёРєР°С‚), РЅСѓРјРµСЂСѓРµРј Р·Р°РїРёСЃРё РІ РіСЂСѓРїРїР°С…. 
+РћС‚Р±РёСЂР°РµРј РІСЃРµ, Сѓ РєРѕС‚РѕСЂС‹С… РїРѕСЂСЏРґРєРѕРІС‹Р№ РЅРѕРјРµСЂ Р±РѕР»СЊС€Рµ 1 Рё СѓРґР°Р»СЏРµРј РїРѕ ROWID
 
-/* Вынесение второй записи группы в отдельное поле */
+/* Р’С‹РЅРµСЃРµРЅРёРµ РІС‚РѕСЂРѕР№ Р·Р°РїРёСЃРё РіСЂСѓРїРїС‹ РІ РѕС‚РґРµР»СЊРЅРѕРµ РїРѕР»Рµ */
 select empno,
        sum(decode(rn, 1, a_value, null)),
        sum(decode(rn, 2, a_value, null)) from(
@@ -79,11 +79,11 @@ select ev1.empno,
       order by rn, ev1.a_value)
       group by empno
       order by empno
-пример: если у гражданина, кроме паспорта, есть загранпаспорт, то он выводится во вторую колонку
+РїСЂРёРјРµСЂ: РµСЃР»Рё Сѓ РіСЂР°Р¶РґР°РЅРёРЅР°, РєСЂРѕРјРµ РїР°СЃРїРѕСЂС‚Р°, РµСЃС‚СЊ Р·Р°РіСЂР°РЅРїР°СЃРїРѕСЂС‚, С‚Рѕ РѕРЅ РІС‹РІРѕРґРёС‚СЃСЏ РІРѕ РІС‚РѕСЂСѓСЋ РєРѕР»РѕРЅРєСѓ
 
-/* Формирование поля из ряда чисел от 1 до 10 */
+/* Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ РїРѕР»СЏ РёР· СЂСЏРґР° С‡РёСЃРµР» РѕС‚ 1 РґРѕ 10 */
 select rownum from dual connect by rownum < 10;
---Cоздание временной таблицы с объектным типом колонки
+--CРѕР·РґР°РЅРёРµ РІСЂРµРјРµРЅРЅРѕР№ С‚Р°Р±Р»РёС†С‹ СЃ РѕР±СЉРµРєС‚РЅС‹Рј С‚РёРїРѕРј РєРѕР»РѕРЅРєРё
 CREATE TYPE SCOTT.PERSON_T
 AS
 OBJECT (
@@ -96,29 +96,29 @@ TABLE SCOTT.TMP_OBJ
 PERSON PERSON_T
 )    
 ON COMMIT DELETE ROWS;
---Cоздание и обращение к переменной в стандартном контексте CLIENTCONTEXT
+--CРѕР·РґР°РЅРёРµ Рё РѕР±СЂР°С‰РµРЅРёРµ Рє РїРµСЂРµРјРµРЅРЅРѕР№ РІ СЃС‚Р°РЅРґР°СЂС‚РЅРѕРј РєРѕРЅС‚РµРєСЃС‚Рµ CLIENTCONTEXT
 begin 
   dbms_session.set_context('CLIENTCONTEXT', 'n_param', 1); 
   dbms_session.set_context('CLIENTCONTEXT', 'v_param', 'Y'); 
 end;
 select sys_context('CLIENTCONTEXT', 'n_param') from dual;
 select sys_context('CLIENTCONTEXT', 'v_param') from dual;
-/* Cоздание и ображение к переменной в пользовательском контексте
-Создаем пользовательский контекст. MY_CONTEXT_API - пакет, функциям которого при инициализации контекста выдаются write-права на контекст. */
+/* CРѕР·РґР°РЅРёРµ Рё РѕР±СЂР°Р¶РµРЅРёРµ Рє РїРµСЂРµРјРµРЅРЅРѕР№ РІ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРѕРј РєРѕРЅС‚РµРєСЃС‚Рµ
+РЎРѕР·РґР°РµРј РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёР№ РєРѕРЅС‚РµРєСЃС‚. MY_CONTEXT_API - РїР°РєРµС‚, С„СѓРЅРєС†РёСЏРј РєРѕС‚РѕСЂРѕРіРѕ РїСЂРё РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РєРѕРЅС‚РµРєСЃС‚Р° РІС‹РґР°СЋС‚СЃСЏ write-РїСЂР°РІР° РЅР° РєРѕРЅС‚РµРєСЃС‚. */
 create or replace context MY_CONTEXT using MY_CONTEXT_API;
---Теперь мы можем проинициализировать переменную в пользовательском контексте MY_CONTEXT с помощью процедуры
+--РўРµРїРµСЂСЊ РјС‹ РјРѕР¶РµРј РїСЂРѕРёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°С‚СЊ РїРµСЂРµРјРµРЅРЅСѓСЋ РІ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРѕРј РєРѕРЅС‚РµРєСЃС‚Рµ MY_CONTEXT СЃ РїРѕРјРѕС‰СЊСЋ РїСЂРѕС†РµРґСѓСЂС‹
 procedure set_my_context(p_var  varchar2,
                          p_val  varchar2)
 is
 begin
    dbms_session.set_context('MY_CONTEXT', p_var, p_val);
 end;
--- Создание и обращение будут выглядеть так:
+-- РЎРѕР·РґР°РЅРёРµ Рё РѕР±СЂР°С‰РµРЅРёРµ Р±СѓРґСѓС‚ РІС‹РіР»СЏРґРµС‚СЊ С‚Р°Рє:
 begin
    MY_CONTEXT_API.set_my_context(p_var => 'p_var', p_val => 'Y');
 end;
 select sys_context('MY_CONTEXT', 'p_var') from dual;
---Пример использования PIVOT, UNPIVOT
+--РџСЂРёРјРµСЂ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ PIVOT, UNPIVOT
 with a as (
       select 1 pk, 'Answer1' answr, 'Y' flag from dual
       union
@@ -141,7 +141,7 @@ with a as (
                                         'Answer4'
                                        ))
      );
---И наоборот:
+--Р РЅР°РѕР±РѕСЂРѕС‚:
 select *
   from XXIP310_pivotview_tmp
   unpivot(flag for answr in(answer1w as
@@ -152,7 +152,7 @@ select *
                            'Answer3',
                            answer4w as
                            'Answer4'))
-/* Просмотр текущих блокировок */
+/* РџСЂРѕСЃРјРѕС‚СЂ С‚РµРєСѓС‰РёС… Р±Р»РѕРєРёСЂРѕРІРѕРє */
 select c.owner,
        c.object_name,
        c.object_type,
@@ -185,20 +185,20 @@ SHARE ROW EXCLUSIVE SHARE ROW EXCLUSIVE is used to look at a whole table and to 
 EXCLUSIVE EXCLUSIVE permits queries on the locked table but prohibits any other activity on it.
 */
 
-/* Генерация псевдослучайных данных */
+/* Р“РµРЅРµСЂР°С†РёСЏ РїСЃРµРІРґРѕСЃР»СѓС‡Р°Р№РЅС‹С… РґР°РЅРЅС‹С… */
 select rownum rn,
          DBMS_RANDOM.STRING('a', 8) str_rnd,
          round(DBMS_RANDOM.value(1, 5)) num_rnd,
          trunc(sysdate - DBMS_RANDOM.value(1, 1000)) date_rnd
     from dual
 
-/* Римские цифры */
+/* Р РёРјСЃРєРёРµ С†РёС„СЂС‹ */
 select 
   rownum ara
  ,to_char(rownum,'fmrn') rom
 from all_objects where rownum < 4000 
 
-/* Курсор с параметрами */
+/* РљСѓСЂСЃРѕСЂ СЃ РїР°СЂР°РјРµС‚СЂР°РјРё */
 declare
     CURSOR A(c_tab IN varchar2) IS SELECT TABLE_NAME FROM USER_TABLES
       WHERE TABLE_NAME LIKE c_tab;
@@ -213,38 +213,38 @@ declare
     close A;
   end;
 
-/* Время с миллисекундами */
+/* Р’СЂРµРјСЏ СЃ РјРёР»Р»РёСЃРµРєСѓРЅРґР°РјРё */
 select to_char(systimestamp, 'HH24:MI:SSXFF') from dual;
 
-/* Языковые настройки экземпляра */
+/* РЇР·С‹РєРѕРІС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё СЌРєР·РµРјРїР»СЏСЂР° */
 select DECODE(parameter, 'NLS_CHARACTERSET', 'CHARACTER SET',
 'NLS_LANGUAGE', 'LANGUAGE',
 'NLS_TERRITORY', 'TERRITORY') name,
 value from v$nls_parameters
 WHERE parameter IN ( 'NLS_CHARACTERSET', 'NLS_LANGUAGE', 'NLS_TERRITORY') 
 
-/* Время с миллисекундами */
+/* Р’СЂРµРјСЏ СЃ РјРёР»Р»РёСЃРµРєСѓРЅРґР°РјРё */
 select to_char(systimestamp, 'HH24:MI:SSXFF') from dual;
 
-/* Выгрузка RU-объектов OeBS */
+/* Р’С‹РіСЂСѓР·РєР° RU-РѕР±СЉРµРєС‚РѕРІ OeBS */
 export NLS_LANG=RUSSIAN_RUSSIA.CL8MSWIN1251
 Predefined Inquiry Directives
-Dbms_Output.put_line($$PLSQL_UNIT); --текущая процедура 
-Dbms_Output.put_line($$PLSQL_LINE); --текущая строка
+Dbms_Output.put_line($$PLSQL_UNIT); --С‚РµРєСѓС‰Р°СЏ РїСЂРѕС†РµРґСѓСЂР° 
+Dbms_Output.put_line($$PLSQL_LINE); --С‚РµРєСѓС‰Р°СЏ СЃС‚СЂРѕРєР°
 
-/* Импорт документа XML в таблицу с использованием пакета DBMS_XMLSAVE */
+/* РРјРїРѕСЂС‚ РґРѕРєСѓРјРµРЅС‚Р° XML РІ С‚Р°Р±Р»РёС†Сѓ СЃ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј РїР°РєРµС‚Р° DBMS_XMLSAVE */
 procedure upload(p_xml in clob)
   is
     l_context   number;
     l_inserted  number;
   begin
-    l_context  := DBMS_XMLSAVE.newContext('XLS_UPLOAD_DATA'); // имя таблица
-    DBMS_XMLSAVE.setrowtag (l_context, 'LINE'); //имя XML-тега, в котором находится кортеж данных
+    l_context  := DBMS_XMLSAVE.newContext('XLS_UPLOAD_DATA'); // РёРјСЏ С‚Р°Р±Р»РёС†Р°
+    DBMS_XMLSAVE.setrowtag (l_context, 'LINE'); //РёРјСЏ XML-С‚РµРіР°, РІ РєРѕС‚РѕСЂРѕРј РЅР°С…РѕРґРёС‚СЃСЏ РєРѕСЂС‚РµР¶ РґР°РЅРЅС‹С…
     l_inserted := DBMS_XMLSAVE.insertXML(l_context, p_xml);
     DBMS_XMLSAVE.closecontext(l_context);
 end upload;
 
-/* Расчет фин.показателя ВНД(IRR) */
+/* Р Р°СЃС‡РµС‚ С„РёРЅ.РїРѕРєР°Р·Р°С‚РµР»СЏ Р’РќР”(IRR) */
 with t as
  (select year dt, ncf summ from table(self.l_step2_year))
 select round(irr * 100, 2)
@@ -257,7 +257,7 @@ select round(irr * 100, 2)
           until(s [ 1 ] + disc_summ [ 1 ] < 0)(ss [ any ] = s [ CV() ] / power(1 + IRR [ 1 ], dt [ CV() ] / 365), 
           disc_summ [ 1 ] = sum(ss) [ rn > 1 ], irr [ 1 ] = irr [ 1 ] + rate_step [ 1 ]))
  where rn = 1;
-Foreign key references для таблицы
+Foreign key references РґР»СЏ С‚Р°Р±Р»РёС†С‹
 select table_name, constraint_name, status, owner
 from all_constraints
 where constraint_type = 'R'
@@ -269,7 +269,7 @@ and r_constraint_name in
  )
 order by table_name, constraint_name
 
-/* парсинг строки с разделителями */
+/* РїР°СЂСЃРёРЅРі СЃС‚СЂРѕРєРё СЃ СЂР°Р·РґРµР»РёС‚РµР»СЏРјРё */
 declare
   l_args      varchar2(50) := 'a1, b1, c1';
   l_aliases   varchar2(50) := 'a2, b2, c2';
@@ -290,7 +290,7 @@ begin
    end loop;
 end;
 
-/* просмотр сессий, блокирующих GTT */
+/* РїСЂРѕСЃРјРѕС‚СЂ СЃРµСЃСЃРёР№, Р±Р»РѕРєРёСЂСѓСЋС‰РёС… GTT */
 select --+rule
        s.INST_ID, s.SID, s.SERIAL#, s.USERNAME, s.STATUS, s.MACHINE 
   from gv$lock l, gv$session s 
