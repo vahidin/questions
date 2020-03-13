@@ -1,25 +1,52 @@
-/* Проверка  статистики по таблице */
-SELECT t.last_analyzed,
-       t.table_name,
+/* РЎС‚Р°С‚РёСЃС‚РёРєР° РїРѕ С‚Р°Р±Р»РёС†Р°Рј */
+SELECT t.table_name,
+       t.last_analyzed,
+       t.num_rows,
+       t.sample_size 
+  FROM USER_TABLES t
+ ORDER BY t.last_analyzed;
+
+/* РЎР±РѕСЂ СЃС‚Р°С‚РёСЃС‚РёРєРё */
+BEGIN 
+  -- РЎР±РѕСЂ СЃС‚Р°С‚РёСЃС‚РёРєРё РїРѕ С‚Р°Р±Р»РёС†Рµ.
+  dbms_stats.gather_table_stats ('SCOTT','EMP'); 
+
+  -- Р‘Р»РѕРєРёСЂРѕРІР°С‚СЊ СЃС‚Р°С‚РёСЃС‚РёРєСѓ РґР»СЏ С‚РѕРіРѕ, С‡С‚РѕР±С‹ РёСЃРєР»СЋС‡РёС‚СЊ РѕР±СЉРµРєС‚С‹ СЃ СЂРµР°Р»СЊРЅРѕ Р±РѕР»СЊС€РёРј РєРѕР»РёС‡РµСЃС‚РІРѕРј РЅРµРёР·РјРµРЅРЅС‹С… СЃРїСЂР°РІРѕС‡РЅРёРєРѕРІ.
+  dbms_stats.lock_table_stats ('SCOTT','EMP'); 
+  
+  -- РЎРЅСЏС‚СЊ Р±Р»РѕРєРёСЂРѕРІРєСѓ.
+  dbms_stats.unlock_table_stats('SCOTT','EMP');
+END;
+
+/* РЎР±РѕСЂ СЃС‚Р°С‚РёСЃС‚РёРєРё РїРѕ Р’РЎР•Рњ РѕР±СЉРµРєС‚Р°Рј СЃС…РµРјС‹ */
+BEGIN 
+  dbms_stats.gather_schema_stats (USER); 
+END;
+
+/* CС‚Р°С‚РёСЃС‚РёРєР° РїРѕ С‚Р°Р±Р»РёС†Р°Рј */
+SELECT t.table_name,
+       t.last_analyzed,
        t.owner,
        t.num_rows,
        t.sample_size
   FROM DBA_TABLES t
- WHERE t.TABLE_NAME = 'CSC_CONNECT_OUT'
+ WHERE 1=1
+   AND t.OWNER = 'SCOTT'
  ORDER BY t.last_analyzed;
 
-/* Просматривать статистические данные по всем таблицам в базе данных */
+/* CС‚Р°С‚РёСЃС‚РёС‡РµСЃРєРёРµ РґР°РЅРЅС‹Рµ РїРѕ С‚Р°Р±Р»РёС†Р°Рј */
 SELECT *
   FROM DBA_TAB_STATISTICS t
- WHERE t.TABLE_NAME = 'CSC_CONNECT_OUT';
+ WHERE 1=1
+   AND t.OWNER = 'SCOTT';
 
-/* Просматривать статистические данные по столбцам */
-SELECT column_name,
-       num_distinct
-  FROM DBA_TAB_COL_STATISTICS
- WHERE table_name = 'CSC_CONNECT_OUT';
+/* CС‚Р°С‚РёСЃС‚РёС‡РµСЃРєРёРµ РґР°РЅРЅС‹Рµ РїРѕ СЃС‚РѕР»Р±С†Р°Рј */
+SELECT *
+  FROM DBA_TAB_COL_STATISTICS t
+ WHERE 1=1
+   AND t.OWNER = 'SCOTT';
 
-/* Узнать, как в текущий момент выглядит режим оптимизатора в базе данных */
+/* РљР°РєРѕР№ РІ С‚РµРєСѓС‰РёР№ РјРѕРјРµРЅС‚ СЂРµР¶РёРј РѕРїС‚РёРјРёР·Р°С‚РѕСЂР° РІ Р±Р°Р·Рµ РґР°РЅРЅС‹С… */
 SELECT NAME,
        VALUE
   FROM V$PARAMETER
