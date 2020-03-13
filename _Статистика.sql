@@ -1,11 +1,14 @@
 /* Статистика по таблицам */
-SELECT t.table_name,
-       t.last_analyzed,
-       t.num_rows,
-       t.sample_size 
-  FROM USER_TABLES t
- ORDER BY t.last_analyzed;
-
+SELECT t.TABLE_NAME,
+       t.TEMPORARY,
+       t.LAST_ANALYZED,
+       t.NUM_ROWS,
+       t.GLOBAL_STATS,
+       t.DURATION,
+       t.MONITORING
+  FROM User_Tables t
+ ORDER BY t.LAST_ANALYZED DESC;
+ 
 /* Сбор статистики */
 BEGIN 
   -- Сбор статистики по таблице.
