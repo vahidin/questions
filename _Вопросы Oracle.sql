@@ -1,12 +1,12 @@
-Вопросы Oracle.
+Р’РѕРїСЂРѕСЃС‹ Oracle.
 
-/* Информация об инстансе БД */
+/* РРЅС„РѕСЂРјР°С†РёСЏ РѕР± РёРЅСЃС‚Р°РЅСЃРµ Р‘Р” */
 SELECT * FROM v$instance;
 
-/* Динамическое представление производительности */
+/* Р”РёРЅР°РјРёС‡РµСЃРєРѕРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЊРЅРѕСЃС‚Рё */
 SELECT * FROM v$undostat;
 
-/* Просмотр сегментов */
+/* РџСЂРѕСЃРјРѕС‚СЂ СЃРµРіРјРµРЅС‚РѕРІ */
 SELECT v.segment_name, 
        v.segment_type, 
        v.bytes/1024 AS kb,
@@ -15,7 +15,7 @@ SELECT v.segment_name,
        v.initial_extent
   FROM User_Segments v;
   
-/* Контекст схемы */
+/* РљРѕРЅС‚РµРєСЃС‚ СЃС…РµРјС‹ */
 SELECT 
         SYS_CONTEXT ( 'userenv', 'AUTHENTICATION_TYPE' ) authent
       , SYS_CONTEXT ( 'userenv', 'CURRENT_SCHEMA' )      curr_schema
@@ -33,12 +33,12 @@ SELECT
       , SYS_CONTEXT ( 'userenv', 'SID')                  sid
 FROM    dual;
 
-/* HINT - добавление к запросу индексной подсказки */
-SELECT /*+ INDEX(<table> <имя индекса>) */
-/* HINT - использовать созданный индекс для чтения записей из таблицы через индекс */
+/* HINT - РґРѕР±Р°РІР»РµРЅРёРµ Рє Р·Р°РїСЂРѕСЃСѓ РёРЅРґРµРєСЃРЅРѕР№ РїРѕРґСЃРєР°Р·РєРё */
+SELECT /*+ INDEX(<table> <РёРјСЏ РёРЅРґРµРєСЃР°>) */
+/* HINT - РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЃРѕР·РґР°РЅРЅС‹Р№ РёРЅРґРµРєСЃ РґР»СЏ С‡С‚РµРЅРёСЏ Р·Р°РїРёСЃРµР№ РёР· С‚Р°Р±Р»РёС†С‹ С‡РµСЂРµР· РёРЅРґРµРєСЃ */
 SELECT /*+ FIRST_ROWS */ t.empno, t.ename, t.hiredate FROM emp t ORDER BY t.empno;
 
-/* Исключения */
+/* РСЃРєР»СЋС‡РµРЅРёСЏ */
 DECLARE
    l_Out VARCHAR2(1);
 BEGIN
@@ -53,18 +53,18 @@ EXCEPTION
 END;
 
 
-/* Соглашения при написании кода  */
+/* РЎРѕРіР»Р°С€РµРЅРёСЏ РїСЂРё РЅР°РїРёСЃР°РЅРёРё РєРѕРґР°  */
 CREATE OR REPLACE PACKAGE BODY My_PKG AS
-  g_Variable VARCHAR2(25); -- g_ - Глобальная переменная
-  PROCEDURE My_РRC(p_Variable_IN IN VARCHAR2) IS -- p_ - Параметр
-    l_Variable VARCHAR2(25); -- l_ - Локальная переменная
+  g_Variable VARCHAR2(25); -- g_ - Р“Р»РѕР±Р°Р»СЊРЅР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ
+  PROCEDURE My_Р RC(p_Variable_IN IN VARCHAR2) IS -- p_ - РџР°СЂР°РјРµС‚СЂ
+    l_Variable VARCHAR2(25); -- l_ - Р›РѕРєР°Р»СЊРЅР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ
   BEGIN
     NULL;
   END;
 END;
 
 
-/* Обновить или дополнить записи из другой таблицы */
+/* РћР±РЅРѕРІРёС‚СЊ РёР»Рё РґРѕРїРѕР»РЅРёС‚СЊ Р·Р°РїРёСЃРё РёР· РґСЂСѓРіРѕР№ С‚Р°Р±Р»РёС†С‹ */
 MERGE INTO person p
 USING (SELECT tabn, NAME, age  FROM person1) p1
 ON (p.tabn = p1.tabn)
@@ -76,47 +76,47 @@ WHEN NOT MATCHED THEN
     (p.tabn, p.name, p.age)
   VALUES
     (p1.tabn, p1.name, p1.age);
--- записи в Person будут обновлены и дополнены записями из Person1
+-- Р·Р°РїРёСЃРё РІ Person Р±СѓРґСѓС‚ РѕР±РЅРѕРІР»РµРЅС‹ Рё РґРѕРїРѕР»РЅРµРЅС‹ Р·Р°РїРёСЃСЏРјРё РёР· Person1
                                             
-/* Специальные символы */
+/* РЎРїРµС†РёР°Р»СЊРЅС‹Рµ СЃРёРјРІРѕР»С‹ */
 SELECT CHR(34), -- "
        CHR(38), -- &
        CHR(39), -- '
-       CHR(10), -- перевод строки
-       ASCII('"') -- код 34
+       CHR(10), -- РїРµСЂРµРІРѕРґ СЃС‚СЂРѕРєРё
+       ASCII('"') -- РєРѕРґ 34
   FROM dual;
 
 
-/* DECODE (функция декодирования) */
-SELECT t.ename AS "Имя",
+/* DECODE (С„СѓРЅРєС†РёСЏ РґРµРєРѕРґРёСЂРѕРІР°РЅРёСЏ) */
+SELECT t.ename AS "РРјСЏ",
        t.job,
        DECODE  (t.job
-               ,'CLERK'   ,'Клерк'
-               ,'SALESMAN','Продавец'
-               ,'MANAGER' ,'Менеджер'
-               ,'ANALYST' ,'Аналитик'
-               ,'Другое'  ) AS "Должность"
+               ,'CLERK'   ,'РљР»РµСЂРє'
+               ,'SALESMAN','РџСЂРѕРґР°РІРµС†'
+               ,'MANAGER' ,'РњРµРЅРµРґР¶РµСЂ'
+               ,'ANALYST' ,'РђРЅР°Р»РёС‚РёРє'
+               ,'Р”СЂСѓРіРѕРµ'  ) AS "Р”РѕР»Р¶РЅРѕСЃС‚СЊ"
   FROM SCOTT.emp t
  ORDER BY (2);
 
-   Имя     JOB       Должность
+   РРјСЏ     JOB       Р”РѕР»Р¶РЅРѕСЃС‚СЊ
 ------------------------------
- 1 SCOTT   ANALYST   Аналитик
- 2 FORD    ANALYST   Аналитик
- 3 MILLER  CLERK     Клерк
- 4 JAMES   CLERK     Клерк
- 5 SMITH   CLERK     Клерк
- 6 ADAMS   CLERK     Клерк
- 7 BLAKE   MANAGER   Менеджер
- 8 JONES   MANAGER   Менеджер
- 9 CLARK   MANAGER   Менеджер
-10 KING    PRESIDENT Другое
-11 TURNER  SALESMAN  Продавец
-12 MARTIN  SALESMAN  Продавец
-13 WARD    SALESMAN  Продавец
-14 ALLEN   SALESMAN  Продавец
+ 1 SCOTT   ANALYST   РђРЅР°Р»РёС‚РёРє
+ 2 FORD    ANALYST   РђРЅР°Р»РёС‚РёРє
+ 3 MILLER  CLERK     РљР»РµСЂРє
+ 4 JAMES   CLERK     РљР»РµСЂРє
+ 5 SMITH   CLERK     РљР»РµСЂРє
+ 6 ADAMS   CLERK     РљР»РµСЂРє
+ 7 BLAKE   MANAGER   РњРµРЅРµРґР¶РµСЂ
+ 8 JONES   MANAGER   РњРµРЅРµРґР¶РµСЂ
+ 9 CLARK   MANAGER   РњРµРЅРµРґР¶РµСЂ
+10 KING    PRESIDENT Р”СЂСѓРіРѕРµ
+11 TURNER  SALESMAN  РџСЂРѕРґР°РІРµС†
+12 MARTIN  SALESMAN  РџСЂРѕРґР°РІРµС†
+13 WARD    SALESMAN  РџСЂРѕРґР°РІРµС†
+14 ALLEN   SALESMAN  РџСЂРѕРґР°РІРµС†
 
-/* COALESCE - возвращает первое ненулевое выражение из списка */
+/* COALESCE - РІРѕР·РІСЂР°С‰Р°РµС‚ РїРµСЂРІРѕРµ РЅРµРЅСѓР»РµРІРѕРµ РІС‹СЂР°Р¶РµРЅРёРµ РёР· СЃРїРёСЃРєР° */
 SELECT COALESCE(t.comm, 1) AS comm FROM SCOTT.emp t;
 COMM
 -------
@@ -135,7 +135,7 @@ COMM
 13    1
 14    1
 
-/*  Курсор */
+/*  РљСѓСЂСЃРѕСЂ */
 DECLARE
         l_rowCnt NUMBER := 0;
 
@@ -144,7 +144,7 @@ DECLARE
           FROM emp t 
          ORDER BY t.empno;
         
-        l_recCur Cur%ROWTYPE; -- столбцы из курсора
+        l_recCur Cur%ROWTYPE; -- СЃС‚РѕР»Р±С†С‹ РёР· РєСѓСЂСЃРѕСЂР°
 BEGIN
         OPEN Cur;
         LOOP
@@ -159,7 +159,7 @@ BEGIN
        CLOSE cur;
 END;
 
-/* REF CURSOR курсорная переменная */
+/* REF CURSOR РєСѓСЂСЃРѕСЂРЅР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ */
 DECLARE
   TYPE l_refCur IS REF CURSOR;
   var_refCur    l_refCur;
@@ -177,26 +177,26 @@ BEGIN
   CLOSE var_refCur;
 END;
 
-/* Интервальные промежутки (10мин) */
+/* РРЅС‚РµСЂРІР°Р»СЊРЅС‹Рµ РїСЂРѕРјРµР¶СѓС‚РєРё (10РјРёРЅ) */
 
 
-/* Предыдущее, Текущее, Следующее  */
+/* РџСЂРµРґС‹РґСѓС‰РµРµ, РўРµРєСѓС‰РµРµ, РЎР»РµРґСѓСЋС‰РµРµ  */
 WITH t AS
           (SELECT TRUNC(SYSDATE - 1) + LEVEL sdate
              FROM dual
           CONNECT BY LEVEL <= 10
             ORDER BY TRUNC(SYSDATE))
-SELECT LAG(t.sdate) OVER(ORDER BY t.sdate)  AS "Предыдущая дата",
-       t.sdate                              AS "Текущая дата",
-       LEAD(t.sdate) OVER(ORDER BY t.sdate) AS "Следующая дата"
+SELECT LAG(t.sdate) OVER(ORDER BY t.sdate)  AS "РџСЂРµРґС‹РґСѓС‰Р°СЏ РґР°С‚Р°",
+       t.sdate                              AS "РўРµРєСѓС‰Р°СЏ РґР°С‚Р°",
+       LEAD(t.sdate) OVER(ORDER BY t.sdate) AS "РЎР»РµРґСѓСЋС‰Р°СЏ РґР°С‚Р°"
   FROM t;
 
 
--- Автоинкремент.
+-- РђРІС‚РѕРёРЅРєСЂРµРјРµРЅС‚.
 CREATE TABLE t ( id  NUMBER GENERATED BY DEFAULT ON NULL AS IDENTITY,
                  nmr NUMBER(10), text VARCHAR2(10), tdate DATE);
     
-/* Иерархические запросы */
+/* РРµСЂР°СЂС…РёС‡РµСЃРєРёРµ Р·Р°РїСЂРѕСЃС‹ */
   SELECT e.empno, e.ename, e.job, e.mgr,
          PRIOR e.job                     AS by_manager,
          LEVEL                           AS lev,
@@ -225,24 +225,24 @@ CREATE TABLE t ( id  NUMBER GENERATED BY DEFAULT ON NULL AS IDENTITY,
 14 7369  SMITH   CLERK      7902  ANALYST     4    RESIDENT  /PRESIDENT/MANAGER/ANALYST/CLERK
 
 
-/* Первые или Последние 10 записей - Oracle 12c */
+/* РџРµСЂРІС‹Рµ РёР»Рё РџРѕСЃР»РµРґРЅРёРµ 10 Р·Р°РїРёСЃРµР№ - Oracle 12c */
 SELECT *
   FROM pms_pcrf_log
- ORDER BY id ASC -- DESC полседние
+ ORDER BY id ASC -- DESC РїРѕР»СЃРµРґРЅРёРµ
  FETCH FIRST 10 ROWS ONLY;
  
-/* Последние 5 записей, классика - Oracle 11c */
+/* РџРѕСЃР»РµРґРЅРёРµ 5 Р·Р°РїРёСЃРµР№, РєР»Р°СЃСЃРёРєР° - Oracle 11c */
 SELECT rt.*
   FROM (SELECT tab.lev,
                row_number() OVER(ORDER BY (1)) AS rn
           FROM (SELECT LEVEL AS lev
                   FROM dual
                CONNECT BY LEVEL <= 100
-                 ORDER BY (1) DESC) tab -- последние 
+                 ORDER BY (1) DESC) tab -- РїРѕСЃР»РµРґРЅРёРµ 
         ) rt 
  WHERE rt.rn <= 5;
 
-/* Последняя операция */
+/* РџРѕСЃР»РµРґРЅСЏСЏ РѕРїРµСЂР°С†РёСЏ */
  SELECT r.*
    FROM (SELECT t.*,
                 RANK() OVER(PARTITION BY t.iccid ORDER BY t.request_date DESC) rnk
@@ -255,11 +255,11 @@ SELECT rt.*
 
 
 --Refcursor
---конструкции FORALL и BULK COLLECT
---История изменений таблицы
---План запроса (оптимизация)
+--РєРѕРЅСЃС‚СЂСѓРєС†РёРё FORALL Рё BULK COLLECT
+--РСЃС‚РѕСЂРёСЏ РёР·РјРµРЅРµРЅРёР№ С‚Р°Р±Р»РёС†С‹
+--РџР»Р°РЅ Р·Р°РїСЂРѕСЃР° (РѕРїС‚РёРјРёР·Р°С†РёСЏ)
 
---Сгенерировать строки с числами Системный тип ODCINumberList VARRAY(32767) OF NUMBER
+--РЎРіРµРЅРµСЂРёСЂРѕРІР°С‚СЊ СЃС‚СЂРѕРєРё СЃ С‡РёСЃР»Р°РјРё РЎРёСЃС‚РµРјРЅС‹Р№ С‚РёРї ODCINumberList VARRAY(32767) OF NUMBER
  SELECT ROWNUM, COLUMN_VALUE, SYSDATE FROM sys.ODCINumberList(10,20,30,40,50);
  SELECT ROWNUM, COLUMN_VALUE, SYSDATE FROM sys.ODCIVarchar2List('A','B','C','D','E');
  SELECT 'A','B','C','D','E' FROM dual;
@@ -272,16 +272,16 @@ BEGIN
 END;
 
 
--- Создать коллекцию типа таблицы
+-- РЎРѕР·РґР°С‚СЊ РєРѕР»Р»РµРєС†РёСЋ С‚РёРїР° С‚Р°Р±Р»РёС†С‹
 CREATE OR REPLACE TYPE TEST_NUMBER_TABLE AS TABLE OF NUMBER(20);
--- Выборка из коллекции типа таблицы
+-- Р’С‹Р±РѕСЂРєР° РёР· РєРѕР»Р»РµРєС†РёРё С‚РёРїР° С‚Р°Р±Р»РёС†С‹
 SELECT  * FROM TEST_NUMBER_TABLE(1,2,3,4,5,1,2);
---CARDINALITY возвращает число элеметов. Тип возращаемого значения NUMBER.
+--CARDINALITY РІРѕР·РІСЂР°С‰Р°РµС‚ С‡РёСЃР»Рѕ СЌР»РµРјРµС‚РѕРІ. РўРёРї РІРѕР·СЂР°С‰Р°РµРјРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ NUMBER.
 SELECT CARDINALITY(TEST_NUMBER_TABLE(1,2,3,4,5,1,2)) AS test_count FROM dual;
---SET удаляет дубликаты в наборе данных.
+--SET СѓРґР°Р»СЏРµС‚ РґСѓР±Р»РёРєР°С‚С‹ РІ РЅР°Р±РѕСЂРµ РґР°РЅРЅС‹С….
 SELECT * FROM TABLE(SET(TEST_NUMBER_TABLE(1,2,3,4,5,1,2)));
 
-/* Использование коллекции типа таблицы */
+/* РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РєРѕР»Р»РµРєС†РёРё С‚РёРїР° С‚Р°Р±Р»РёС†С‹ */
 DECLARE 
         TYPE tabl_t IS TABLE OF NUMBER;
         v_tab_t tabl_t := tabl_t(10,20,30,40,50);
@@ -291,7 +291,7 @@ BEGIN
         END LOOP;
 END; 
 
-/* пример генерации данных */
+/* РїСЂРёРјРµСЂ РіРµРЅРµСЂР°С†РёРё РґР°РЅРЅС‹С… */
 WITH t AS (SELECT 'x' AS tex, 2 AS val FROM dual
            UNION ALL SELECT 'y', 3 FROM dual
            UNION ALL SELECT 'z', 4 FROM dual)
@@ -310,7 +310,7 @@ SELECT t.*
 8 z    4
 9 z    4
 
-/* Передача массива в Oracle в качестве входного параметра хранимой процедуры. */
+/* РџРµСЂРµРґР°С‡Р° РјР°СЃСЃРёРІР° РІ Oracle РІ РєР°С‡РµСЃС‚РІРµ РІС…РѕРґРЅРѕРіРѕ РїР°СЂР°РјРµС‚СЂР° С…СЂР°РЅРёРјРѕР№ РїСЂРѕС†РµРґСѓСЂС‹. */
 --(1) 
 CREATE OR REPLACE TYPE strings_ct AS TABLE OF VARCHAR2(4000);
 --(2)
@@ -322,15 +322,15 @@ BEGIN
    MyProc(inp_data);
 END;
 
-/*создать схему SCOTT и реализовать пакет с входными параметрами (единичным и множественными) по типу RegisterAgreement
-с использованием (ассоциативный массив, коллекции)
-реализовать в JAVA взаимодействие с пакетом*/
+/*СЃРѕР·РґР°С‚СЊ СЃС…РµРјСѓ SCOTT Рё СЂРµР°Р»РёР·РѕРІР°С‚СЊ РїР°РєРµС‚ СЃ РІС…РѕРґРЅС‹РјРё РїР°СЂР°РјРµС‚СЂР°РјРё (РµРґРёРЅРёС‡РЅС‹Рј Рё РјРЅРѕР¶РµСЃС‚РІРµРЅРЅС‹РјРё) РїРѕ С‚РёРїСѓ RegisterAgreement
+СЃ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј (Р°СЃСЃРѕС†РёР°С‚РёРІРЅС‹Р№ РјР°СЃСЃРёРІ, РєРѕР»Р»РµРєС†РёРё)
+СЂРµР°Р»РёР·РѕРІР°С‚СЊ РІ JAVA РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёРµ СЃ РїР°РєРµС‚РѕРј*/
 
-' Авто COMMIT в цикле, каждые n-строк'
+' РђРІС‚Рѕ COMMIT РІ С†РёРєР»Рµ, РєР°Р¶РґС‹Рµ n-СЃС‚СЂРѕРє'
 DECLARE
-        counter PLS_INTEGER DEFAULT 0; -- счетчик 
-         vLevel PLS_INTEGER DEFAULT 0; -- общее количество строк
-       vCommint PLS_INTEGER DEFAULT 0; -- количество строк для фиксации
+        counter PLS_INTEGER DEFAULT 0; -- СЃС‡РµС‚С‡РёРє 
+         vLevel PLS_INTEGER DEFAULT 0; -- РѕР±С‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚СЂРѕРє
+       vCommint PLS_INTEGER DEFAULT 0; -- РєРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚СЂРѕРє РґР»СЏ С„РёРєСЃР°С†РёРё
 BEGIN
          vLevel := 25;
        vCommint := 10;
@@ -349,14 +349,14 @@ BEGIN
 END;
 
 
---Автоподтверждение транзакции через каждые 1000 записей.
+--РђРІС‚РѕРїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ С‚СЂР°РЅР·Р°РєС†РёРё С‡РµСЂРµР· РєР°Р¶РґС‹Рµ 1000 Р·Р°РїРёСЃРµР№.
 DECLARE
 c_limit PLS_INTEGER := 1000;
 
 CURSOR tp_tmp3_cur IS
 SELECT element_key
-FROM tp_tmp3; -- во временной таблице более 5000 записей
--- определяется ассоциативный массив данных
+FROM tp_tmp3; -- РІРѕ РІСЂРµРјРµРЅРЅРѕР№ С‚Р°Р±Р»РёС†Рµ Р±РѕР»РµРµ 5000 Р·Р°РїРёСЃРµР№
+-- РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ Р°СЃСЃРѕС†РёР°С‚РёРІРЅС‹Р№ РјР°СЃСЃРёРІ РґР°РЅРЅС‹С…
 TYPE tp_tmp3_ids_t IS TABLE OF tp_tmp3.element_key%TYPE;
 tp_tmp3_ids tp_tmp3_ids_t;
 
@@ -393,36 +393,36 @@ ELSE RAISE;
 END IF;
 END;
 
-10.10.2018 Сбер-Технологии - Разработчик БД
-1) Какой резульат
+10.10.2018 РЎР±РµСЂ-РўРµС…РЅРѕР»РѕРіРёРё - Р Р°Р·СЂР°Р±РѕС‚С‡РёРє Р‘Р”
+1) РљР°РєРѕР№ СЂРµР·СѓР»СЊР°С‚
 
 DECLARE
          t_r1 VARCHAR(2);-- NULL;
          t_r2 VARCHAR(2);-- NULL;
   BEGIN
            IF t_r1 != t_r2 THEN
-              dbms_output.put_line('Не равны');
+              dbms_output.put_line('РќРµ СЂР°РІРЅС‹');
         ELSIF t_r1 = t_r2 THEN
-              dbms_output.put_line('Равны');
+              dbms_output.put_line('Р Р°РІРЅС‹');
          ELSE 
-              dbms_output.put_line('НЕИЗВЕСТНО');
+              dbms_output.put_line('РќР•РР—Р’Р•РЎРўРќРћ');
           END IF;
   END;  
 
-2) Проверка на NULL
+2) РџСЂРѕРІРµСЂРєР° РЅР° NULL
 SELECT DECODE( NULL
                ,  1
                , 'ONE'
                ,  NULL
-               , 'EMPTY' -- Неизвестно это условие будет истинным 
+               , 'EMPTY' -- РќРµРёР·РІРµСЃС‚РЅРѕ СЌС‚Рѕ СѓСЃР»РѕРІРёРµ Р±СѓРґРµС‚ РёСЃС‚РёРЅРЅС‹Рј 
                , 'DEFAULT'
              ) dcd
  FROM dual;
 
-3) Выбрать данные за последние 24 часа и сгруппировать по 17 минут.
+3) Р’С‹Р±СЂР°С‚СЊ РґР°РЅРЅС‹Рµ Р·Р° РїРѕСЃР»РµРґРЅРёРµ 24 С‡Р°СЃР° Рё СЃРіСЂСѓРїРїРёСЂРѕРІР°С‚СЊ РїРѕ 17 РјРёРЅСѓС‚.
 
 
-4) Индексы 
+4) РРЅРґРµРєСЃС‹ 
 5) Sequence
 
 
@@ -438,7 +438,7 @@ select extract(xmltype('<input xmlns="http://google.com/testsystem"
     </input>'),'/input/ProcessData/reviewYear/text()', 'xmlns="http://google.com/testsystem" xmlns:testsystem="http://test.com/testSystem" xmlns:tns="http://google.com/testService/"').getStringVal() as data 
 from dual
 
-для проверки обновлений
+РґР»СЏ РїСЂРѕРІРµСЂРєРё РѕР±РЅРѕРІР»РµРЅРёР№
 
 select updatexml(xmltype('<input xmlns="http://google.com/testsystem" 
        xmlns:testsystem="http://test.com/testSystem"          
@@ -464,8 +464,8 @@ from dual
 
 
 --------------------------------------------------------------------------------------
-SELECT LENGTH('ГК Фонд содействия реформированию ЖКХ') FROM dual;
-/* Exception - исключения */
+SELECT LENGTH('Р“Рљ Р¤РѕРЅРґ СЃРѕРґРµР№СЃС‚РІРёСЏ СЂРµС„РѕСЂРјРёСЂРѕРІР°РЅРёСЋ Р–РљРҐ') FROM dual;
+/* Exception - РёСЃРєР»СЋС‡РµРЅРёСЏ */
 DECLARE
         v_res NUMBER;
 BEGIN
@@ -475,7 +475,7 @@ EXCEPTION
           dbms_output.put_line('EXCEPTION:' || CHR(10) || SQLCODE || CHR(10) || SQLERRM || CHR(10) || dbms_utility.format_error_backtrace);
 END;
 
-/* Последовательность счетчик CSC_OPEN_SRCLIST_HISTORY.ID */
+/* РџРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊ СЃС‡РµС‚С‡РёРє CSC_OPEN_SRCLIST_HISTORY.ID */
 CREATE SEQUENCE     CSC_OPEN_SRCLIST_HISTORY_SEQ1
        MINVALUE     1
        START WITH   1
@@ -483,7 +483,7 @@ CREATE SEQUENCE     CSC_OPEN_SRCLIST_HISTORY_SEQ1
        NOCACHE;
 --DROP SEQUENCE CSC_OPEN_SRCLIST_HISTORY_SEQ1;
 
-/* Триггер для таблицы историчности Справочника (Перечень открытых источников) */
+/* РўСЂРёРіРіРµСЂ РґР»СЏ С‚Р°Р±Р»РёС†С‹ РёСЃС‚РѕСЂРёС‡РЅРѕСЃС‚Рё РЎРїСЂР°РІРѕС‡РЅРёРєР° (РџРµСЂРµС‡РµРЅСЊ РѕС‚РєСЂС‹С‚С‹С… РёСЃС‚РѕС‡РЅРёРєРѕРІ) */
 CREATE OR REPLACE TRIGGER CSC_OPEN_SRCLIST_HISTORY_AIUD
   AFTER INSERT 
   OR    UPDATE 
