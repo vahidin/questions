@@ -23,6 +23,16 @@ BEGIN
   dbms_stats.gather_schema_stats (USER); 
 END;
 
+/* Собрать статистику для индекса */
+BEGIN
+  dbms_stats.gather_index_stats('OWNER','INDEX_NAME');
+END;
+
+/* Статистика на секцию */
+BEGIN
+  dbms_stats.gather_table_stats(ownname => p_owner, tabname => p_table_name, partname => p_partition_name, DEGREE=> 4, no_invalidate=>TRUE );
+END;
+
 /* Cтатистика по таблицам */
 SELECT t.table_name,
        t.last_analyzed,
