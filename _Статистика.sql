@@ -6,7 +6,7 @@ SELECT t.TABLE_NAME,
        t.GLOBAL_STATS,
        t.DURATION,
        t.MONITORING
-  FROM User_Tables t
+  FROM USER_TABLES t
  ORDER BY t.LAST_ANALYZED DESC;
  
 /* Сбор статистики */
