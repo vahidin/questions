@@ -1,11 +1,12 @@
-
+/* Р’РЅРµС€РЅРёРµ С‚Р°Р±Р»РёС†С‹ */
 SELECT * FROM All_Directories;
-/* Создаем директорию */
+
+/* РЎРѕР·РґР°РµРј РґРёСЂРµРєС‚РѕСЂРёСЋ */
 DROP   DIRECTORY IMPEXP_DIR;
 /
-CREATE DIRECTORY IMPEXP_DIR AS 'C:\TEMP\IMPEXP_DIR'; -- директория на сервере
+CREATE DIRECTORY IMPEXP_DIR AS 'C:\TEMP\IMPEXP_DIR'; -- РґРёСЂРµРєС‚РѕСЂРёСЏ РЅР° СЃРµСЂРІРµСЂРµ
 
-/* Создаем внешнюю таблицу */
+/* РЎРѕР·РґР°РµРј РІРЅРµС€РЅСЋСЋ С‚Р°Р±Р»РёС†Сѓ */
 SELECT * FROM IMPEXP_DIR_TAB;
 DROP TABLE IMPEXP_DIR_TAB;
 /
@@ -19,8 +20,8 @@ c5 VARCHAR2(1000)
 )
 ORGANIZATION EXTERNAL 
 (
---TYPE ORACLE_LOADER -- позволяет только загружать данные в таблицу
---TYPE ORACLE_DATAPUMP -- загружать и выгружать данные
+--TYPE ORACLE_LOADER -- РїРѕР·РІРѕР»СЏРµС‚ С‚РѕР»СЊРєРѕ Р·Р°РіСЂСѓР¶Р°С‚СЊ РґР°РЅРЅС‹Рµ РІ С‚Р°Р±Р»РёС†Сѓ
+--TYPE ORACLE_DATAPUMP -- Р·Р°РіСЂСѓР¶Р°С‚СЊ Рё РІС‹РіСЂСѓР¶Р°С‚СЊ РґР°РЅРЅС‹Рµ
 DEFAULT DIRECTORY IMPEXP_DIR
 ACCESS PARAMETERS 
 (
@@ -33,9 +34,9 @@ MISSING FIELD VALUES ARE NULL
 LOCATION ('94055.csv')
 );
 
-/* Выгрузка данных в файл */
+/* Р’С‹РіСЂСѓР·РєР° РґР°РЅРЅС‹С… РІ С„Р°Р№Р» */
 DECLARE
-  fHandle UTL_FILE.FILE_TYPE; --используется при каждом открытии файла операционной системы;
+  fHandle UTL_FILE.FILE_TYPE; --РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РїСЂРё РєР°Р¶РґРѕРј РѕС‚РєСЂС‹С‚РёРё С„Р°Р№Р»Р° РѕРїРµСЂР°С†РёРѕРЅРЅРѕР№ СЃРёСЃС‚РµРјС‹;
 BEGIN
     fHandle := UTL_FILE.FOPEN ('IMPEXP_DIR', '94055_exp5.csv', 'w');
   FOR cur IN (select t.c1,t.c2,t.c3,t.c4,t.c5 from IMPEXP_DIR_TAB t) LOOP
