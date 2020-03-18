@@ -1,0 +1,24 @@
+whenever sqlerror exit sql.sqlcode
+
+prompt started!
+
+prompt 1.executing script 1
+@@install/01.script_1.sql
+
+prompt 2.executing script 2
+@@install/02.script_2.sql
+
+prompt 3.executing script 3
+@@install/03.script_3.sql
+
+prompt finished!
+
+------------------------------
+
+@table1.pdc
+@table2.pdc
+@func1.fnc
+@proc1.prc
+@view1.sql
+@view2.sql
+@proc2.prc
