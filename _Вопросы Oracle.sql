@@ -86,6 +86,31 @@ SELECT CHR(34), -- "
        ASCII('"') -- код 34
   FROM dual;
 
+/* Функция DUMP в Oracle SQL позволяет отображать код типа данных, 
+   длину в байтах и внутреннее представление значения данных (и также дополнительно имя набора символов )*/
+SELECT 'Дестяичное' AS Представление, DUMP('a') AS "Кодировка" FROM dual
+ UNION
+SELECT 'Восмеричное',DUMP('a',8) FROM dual
+ UNION
+SELECT 'Шестнадцатеричное', DUMP('a',16) FROM dual;
+
+ 	ПРЕДСТАВЛЕНИЕ	     Кодировка
+-------------------  -----------------
+1	Восмеричное	       Typ=96 Len=1: 141
+2	Дестяичное	       Typ=96 Len=1: 97
+3	Шестнадцатеричное	 Typ=96 Len=1: 61
+
+Значения 97, 141 и 61 - это соответствующие АSСII-коды для символа "а" в десятичной, восьмеричной и шестнадцатеричной форме
+
+/* Дополняет справа количеством символов (удобно для генерации и заполнения данных) */
+SELECT rpad('++++',12,'*') AS "Заполнено", 
+       LENGTH(rpad('++++',12,'*'))AS "Кол символов"
+FROM dual;
+
+  Заполнено    Кол символов
+--------------  ------------
+1 ++++********            12
+
 
 /* DECODE (функция декодирования) */
 SELECT t.ename AS "Имя",
@@ -253,12 +278,6 @@ SELECT rt.*
         ) r
   WHERE r.rnk = 1;
 
-
---Refcursor
---конструкции FORALL и BULK COLLECT
---История изменений таблицы
---План запроса (оптимизация)
-
 --Сгенерировать строки с числами Системный тип ODCINumberList VARRAY(32767) OF NUMBER
  SELECT ROWNUM, COLUMN_VALUE, SYSDATE FROM sys.ODCINumberList(10,20,30,40,50);
  SELECT ROWNUM, COLUMN_VALUE, SYSDATE FROM sys.ODCIVarchar2List('A','B','C','D','E');
@@ -310,14 +329,6 @@ SELECT t.*
 8 z    4
 9 z    4
 
-/* Дополняет справа количеством символов (удобно для генерации и заполнения данных) */
-SELECT rpad('++++',12,'*') AS "Заполнено", 
-       LENGTH(rpad('++++',12,'*'))AS "Кол символов"
-FROM dual;
-
-  Заполнено	  Кол символов
---------------  ------------
-1 ++++********            12
                                                    
                                                    
 /* Передача массива в Oracle в качестве входного параметра хранимой процедуры. */
@@ -332,11 +343,9 @@ BEGIN
    MyProc(inp_data);
 END;
 
-/*создать схему SCOTT и реализовать пакет с входными параметрами (единичным и множественными) по типу RegisterAgreement
-с использованием (ассоциативный массив, коллекции)
-реализовать в JAVA взаимодействие с пакетом*/
-
-' Авто COMMIT в цикле, каждые n-строк'
+/* ПОЛАХАЯ ПРАКТИКА !!!
+   Авто COMMIT в цикле, каждые n-строк */
+ 
 DECLARE
         counter PLS_INTEGER DEFAULT 0; -- счетчик 
          vLevel PLS_INTEGER DEFAULT 0; -- общее количество строк
@@ -358,8 +367,8 @@ BEGIN
         dbms_output.put_line('LOST COMMIT;');          
 END;
 
-
---Автоподтверждение транзакции через каждые 1000 записей.
+/* ПОЛАХАЯ ПРАКТИКА !!!
+   Автоподтверждение транзакции через каждые 1000 записей. */
 DECLARE
 c_limit PLS_INTEGER := 1000;
 
@@ -403,7 +412,9 @@ ELSE RAISE;
 END IF;
 END;
 
-10.10.2018 Сбер-Технологии - Разработчик БД
+
+
+/************* 10.10.2018 Сбер-Технологии ***************/
 1) Какой резульат
 
 DECLARE
@@ -419,6 +430,10 @@ DECLARE
           END IF;
   END;  
 
+      output
+------------
+  НЕИЗВЕСТНО
+
 2) Проверка на NULL
 SELECT DECODE( NULL
                ,  1
@@ -426,8 +441,13 @@ SELECT DECODE( NULL
                ,  NULL
                , 'EMPTY' -- Неизвестно это условие будет истинным 
                , 'DEFAULT'
-             ) dcd
- FROM dual;
+             ) AS res
+  FROM dual;
+
+    RES
+-------
+1	EMPTY
+
 
 3) Выбрать данные за последние 24 часа и сгруппировать по 17 минут.
 
@@ -474,98 +494,3 @@ from dual
 
 
 --------------------------------------------------------------------------------------
-SELECT LENGTH('ГК Фонд содействия реформированию ЖКХ') FROM dual;
-/* Exception - исключения */
-DECLARE
-        v_res NUMBER;
-BEGIN
-SELECT 10/0 INTO v_res FROM dual;
-EXCEPTION
-          WHEN OTHERS THEN 
-          dbms_output.put_line('EXCEPTION:' || CHR(10) || SQLCODE || CHR(10) || SQLERRM || CHR(10) || dbms_utility.format_error_backtrace);
-END;
-
-/* Последовательность счетчик CSC_OPEN_SRCLIST_HISTORY.ID */
-CREATE SEQUENCE     CSC_OPEN_SRCLIST_HISTORY_SEQ1
-       MINVALUE     1
-       START WITH   1
-       INCREMENT BY 1
-       NOCACHE;
---DROP SEQUENCE CSC_OPEN_SRCLIST_HISTORY_SEQ1;
-
-/* Триггер для таблицы историчности Справочника (Перечень открытых источников) */
-CREATE OR REPLACE TRIGGER CSC_OPEN_SRCLIST_HISTORY_AIUD
-  AFTER INSERT 
-  OR    UPDATE 
-  OF    NAME, Source_Link, Information, SUB_Code
-  OR    DELETE
-  ON    CSC_OPEN_SRCLIST 
-  FOR EACH ROW
-BEGIN
-      SELECT CSC_OPEN_SRCLIST_HISTORY_SEQ1.nextval
-      INTO   :NEW.id
-      FROM   dual;
-        CASE
-             WHEN INSERTING THEN
-                  INSERT INTO CSC_OPEN_SRCLIST_HISTORY
-                              (REC_ID, 
-                               NAME, 
-                               Source_Link,
-                               Information,
-                               SUB_Code,
-                               VER_NUM,
-                               User_Changed,
-                               Tr_Type,
-                               HISTORY_DATE) 
-                       VALUES (:NEW.id,                               
-                               :NEW.NAME, 
-                               :NEW.Source_Link,
-                               :NEW.Information,
-                               :NEW.SUB_Code,
-                               1,
-                               USER,
-                               'INS',
-                               SYSDATE);
-             WHEN UPDATING THEN
-                   INSERT INTO CSC_OPEN_SRCLIST_HISTORY
-                              (REC_ID, 
-                               NAME, 
-                               Source_Link,
-                               Information,
-                               SUB_Code,
-                               VER_NUM,
-                               User_Changed,
-                               Tr_Type,
-                               HISTORY_DATE) 
-                       VALUES (:NEW.id,                               
-                               :NEW.NAME, 
-                               :NEW.Source_Link,
-                               :NEW.Information,
-                               :NEW.SUB_Code,
-                               :NEW.VERN_NUM := :OLD.VER_NUM + 1,
-                               USER,
-                               'UPD',
-                               SYSDATE);
-             WHEN DELETING THEN
-                   INSERT INTO CSC_OPEN_SRCLIST_HISTORY
-                              (REC_ID, 
-                               NAME, 
-                               Source_Link,
-                               Information,
-                               SUB_Code,
-                               VER_NUM,
-                               User_Changed,
-                               Tr_Type,
-                               HISTORY_DATE) 
-                       VALUES (:OLD.id,                               
-                               :OLD.NAME, 
-                               :OLD.Source_Link,
-                               :OLD.Information,
-                               :OLD.SUB_Code,
-                               :OLD.VERN_NUM := :OLD.VER_NUM + 1,
-                               USER,
-                               'DEL',
-                               SYSDATE);
-        END CASE;
-END CSC_OPEN_SRCLIST_HISTORY_AIUD;
---DROP TRIGGER CSC_OPEN_SRCLIST_HISTORY_AIUD;
