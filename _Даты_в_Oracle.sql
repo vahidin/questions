@@ -28,3 +28,27 @@ DESCR                     NEW_DATE
 МЕСЯЦ - последний день    30.11.2012
 НЕДЕЛЯ - первый день      05.11.2012
 НЕДЕЛЯ - последний день   11.11.2012
+
+
+SELECT 'Начальная дата' AS descr,
+       tdate AS res
+  FROM (SELECT to_date('29.02.2020', 'dd.mm.yyyy') tdate
+          FROM dual)
+ UNION
+SELECT 'Через месяц',
+       add_months(tdate, 1)
+  FROM (SELECT to_date('29.02.2020', 'dd.mm.yyyy') tdate
+          FROM dual)
+ UNION
+SELECT 'Через год',
+       add_months(tdate, 12)
+  FROM (SELECT to_date('29.02.2020', 'dd.mm.yyyy') tdate
+          FROM dual)
+ ORDER BY (2);
+
+ 	DESCR	          RES
+----------------  ----------
+1	Начальная дата	29.02.2020
+2	Через месяц	    31.03.2020
+3	Через год	      28.02.2021
+
