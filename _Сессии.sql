@@ -1,15 +1,15 @@
 /* Посмотреть текущие сессии к базе данных. */
-SELECT t.SID, t.SERIAL#, t.osuser as "User", t.MACHINE as "PC", t.PROGRAM as "Program"
-FROM v$session t
+ SELECT t.SID, t.SERIAL#, t.osuser as "User", t.MACHINE as "PC", t.PROGRAM as "Program"
+   FROM v$session t
 --WHERE (NLS_LOWER(t.PROGRAM) = 'cash.exe') -- посмотреть сессии от программы cash.exe
 --WHERE status='ACTIVE' and osuser!='SYSTEM' -- посмотреть пользовательские сессии
 --WHERE username = 'схема' -- посмотреть сессии к схеме (пользователь)
-ORDER BY 4 ASC;
+  ORDER BY 4 ASC;
 
 /* Найти блокирующую сессию. */
 SELECT status, SECONDS_IN_WAIT, BLOCKING_SESSION, SEQ#
-FROM v$session
-WHERE username= upper('scott');
+  FROM v$session
+ WHERE username= upper('scott');
 
 
 
