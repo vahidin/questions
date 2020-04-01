@@ -11,8 +11,6 @@ SELECT status, SECONDS_IN_WAIT, BLOCKING_SESSION, SEQ#
   FROM v$session
  WHERE username= upper('scott');
 
-
-
 /* Убить сессию. */
 ALTER SYSTEM KILL SESSION 'SID,Serial#' IMMEDIATE;
 --Заменить ‘SID’ и ‘Serial#’ на текущие значения сессии.
