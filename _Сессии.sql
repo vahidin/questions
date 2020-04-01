@@ -18,7 +18,6 @@ ALTER SYSTEM KILL SESSION 'SID,Serial#' IMMEDIATE;
 --Заменить ‘SID’ и ‘Serial#’ на текущие значения сессии.
 
 /* Убийство всех сессий к определенной схеме. */
-DECLARE
 define USERNAME = "USER_NAME"
 
 begin
