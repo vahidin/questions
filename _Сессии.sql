@@ -10,11 +10,12 @@ ORDER BY 4 ASC;
 SELECT status, SECONDS_IN_WAIT, BLOCKING_SESSION, SEQ#
 FROM v$session
 WHERE username= upper('scott');
---Заменить ‘SID’ и ‘Serial#’ на текущие значения сессии.
+
 
 
 /* Убить сессию. */
 ALTER SYSTEM KILL SESSION 'SID,Serial#' IMMEDIATE;
+--Заменить ‘SID’ и ‘Serial#’ на текущие значения сессии.
 
 /* Убийство всех сессий к определенной схеме. */
 DECLARE
