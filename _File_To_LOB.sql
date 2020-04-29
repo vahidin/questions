@@ -18,14 +18,11 @@ BEGIN
   
   -- создаем объект BFILE
   l_bfile := bfilename(l_ServDir, l_FileName);
-  
   -- открываем объект LOВ
   dbms_lob.fileopen(l_bfile);
-  
   -- загружаем все содержимое файла в локатор LOB
   -- dbms_lob.getlength(l_bfile) количество байтов BFILE, подлежащих загрузке (все байты)
   dbms_lob.loadfromfile(l_blob, l_bfile, dbms_lob.getlength(l_bfile));
-  
   -- закрываем открытый ранее файл BFILE, и столбец BLOB загружен
   dbms_lob.fileclose(l_bfile);
 
