@@ -1,4 +1,4 @@
-/* Загрузка данных в кодировке UTF8 из файла в CLOB */
+/* Загрузка данных из файла в CLOB с перекодировкой из UTF8 в кодировку БД */
 
 DECLARE
   l_ServDir VARCHAR2(4000) := 'TEMP'; -- объект директории на сервере
@@ -24,7 +24,7 @@ BEGIN
                                   ,dest_offset  => l_dest_offset
                                   ,src_offset   => l_src_offset
                                   ,bfile_csid   => l_src_csid
-                                  ,lang_context => l_lang_context--NLS_CHARSET_ID('AL32UTF8') --US7ASCII
+                                  ,lang_context => l_lang_context
                                   ,warning      => l_warning);
         dbms_lob.close(l_bfile);
         COMMIT;
