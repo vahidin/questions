@@ -8,7 +8,7 @@ DECLARE
   
   l_dest_offset   INTEGER := 1;
   l_src_offset    INTEGER := 1;
-  l_src_csid      NUMBER  := NLS_CHARSET_ID('UTF8');
+  l_src_csid      NUMBER  := NLS_CHARSET_ID('UTF8'); -- кодировка файла
   l_lang_context  NUMBER  := dbms_lob.default_lang_ctx;
   l_warning       INTEGER;
 BEGIN
