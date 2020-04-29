@@ -1,29 +1,29 @@
-/* Загрузка данных из файла в LOB */
+/* Р—Р°РіСЂСѓР·РєР° РґР°РЅРЅС‹С… РёР· С„Р°Р№Р»Р° РІ LOB */
 
 DECLARE
 
-  l_ServDir VARCHAR2(4000) := 'TEMP'; -- объект директории на сервере
-  l_FileName VARCHAR2(200) := 'test.txt'; -- загружаемый файл
+  l_ServDir VARCHAR2(4000) := 'TEMP'; -- РѕР±СЉРµРєС‚ РґРёСЂРµРєС‚РѕСЂРёРё РЅР° СЃРµСЂРІРµСЂРµ
+  l_FileName VARCHAR2(200) := 'test.txt'; -- Р·Р°РіСЂСѓР¶Р°РµРјС‹Р№ С„Р°Р№Р»
   l_blob  BLOB;
   l_clob  CLOB;
   l_bfile BFILE;
 
 BEGIN
   
-  -- создаем в таблице строку, устанавливаем столбцы BLOB и CLOB в
-  -- EMPTY_BLOB(), EMPTY_CLOB() и извлекаем их значения в одном вызове.
+  -- СЃРѕР·РґР°РµРј РІ С‚Р°Р±Р»РёС†Рµ СЃС‚СЂРѕРєСѓ, СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃС‚РѕР»Р±С†С‹ BLOB Рё CLOB РІ
+  -- EMPTY_BLOB(), EMPTY_CLOB() Рё РёР·РІР»РµРєР°РµРј РёС… Р·РЅР°С‡РµРЅРёСЏ РІ РѕРґРЅРѕРј РІС‹Р·РѕРІРµ.
   INSERT INTO SCOTT.TABL
   VALUES (1, l_FileName, EMPTY_BLOB(), EMPTY_CLOB())
   RETURNING File_Blob, File_Clob INTO l_blob, l_clob;
   
-  -- создаем объект BFILE
+  -- СЃРѕР·РґР°РµРј РѕР±СЉРµРєС‚ BFILE
   l_bfile := bfilename(l_ServDir, l_FileName);
-  -- открываем объект LOВ
+  -- РѕС‚РєСЂС‹РІР°РµРј РѕР±СЉРµРєС‚ LOР’
   dbms_lob.fileopen(l_bfile);
-  -- загружаем все содержимое файла в локатор LOB
-  -- dbms_lob.getlength(l_bfile) количество байтов BFILE, подлежащих загрузке (все байты)
+  -- Р·Р°РіСЂСѓР¶Р°РµРј РІСЃРµ СЃРѕРґРµСЂР¶РёРјРѕРµ С„Р°Р№Р»Р° РІ Р»РѕРєР°С‚РѕСЂ LOB
+  -- dbms_lob.getlength(l_bfile) РєРѕР»РёС‡РµСЃС‚РІРѕ Р±Р°Р№С‚РѕРІ BFILE, РїРѕРґР»РµР¶Р°С‰РёС… Р·Р°РіСЂСѓР·РєРµ (РІСЃРµ Р±Р°Р№С‚С‹)
   dbms_lob.loadfromfile(l_blob, l_bfile, dbms_lob.getlength(l_bfile));
-  -- закрываем открытый ранее файл BFILE, и столбец BLOB загружен
+  -- Р·Р°РєСЂС‹РІР°РµРј РѕС‚РєСЂС‹С‚С‹Р№ СЂР°РЅРµРµ С„Р°Р№Р» BFILE, Рё СЃС‚РѕР»Р±РµС† BLOB Р·Р°РіСЂСѓР¶РµРЅ
   dbms_lob.fileclose(l_bfile);
 
   l_bfile := bfilename(l_ServDir, l_FileName);
