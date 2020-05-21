@@ -1,3 +1,4 @@
+
 CREATE OR REPLACE VIEW SCOTT.EMP_DEPT_V AS
 SELECT e.ename,
        e.job,
@@ -5,5 +6,7 @@ SELECT e.ename,
   FROM SCOTT.EMP  e,
        SCOTT.DEPT d
  WHERE e.deptno = d.deptno;
+
+-- Добавление к оператору CREATE VIEW конструкции WITH READ ONLY (ДОСТУП ТОЛЬКО ДЛЯ ЧТЕНИЯ)
 
 DROP VIEW EMP_DEPT_V;
