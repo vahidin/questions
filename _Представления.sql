@@ -40,13 +40,13 @@ SELECT DECODE(GROUPING(v.job),0,to_char(v.job),'Total') AS job,
  ORDER BY cnt_job;
 
 -------------------
-JOB	       CNT_JOB
-PRESIDENT	       1
+JOB	   CNT_JOB
+PRESIDENT        1
 ANALYST	         2
 MANAGER	         3
-CLERK	           4
-SALESMAN	       4
-Total	           14
+CLERK	         4
+SALESMAN         4
+Total	        14
 
 /*
 REFRESH COMPLETE: указывает СУБД, что при автоматическом обновлении хранимого результата 
