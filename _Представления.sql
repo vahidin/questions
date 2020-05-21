@@ -1,4 +1,4 @@
-
+/* Создать представление */
 CREATE OR REPLACE VIEW SCOTT.EMP_DEPT_V AS
 SELECT e.ename,
        e.job,
@@ -8,5 +8,7 @@ SELECT e.ename,
  WHERE e.deptno = d.deptno;
 
 -- Добавление к оператору CREATE VIEW конструкции WITH READ ONLY (ДОСТУП ТОЛЬКО ДЛЯ ЧТЕНИЯ)
+-- Представление можно использовать с SELECT, INSERT, UPDATE и DELETE со всеми таблицами.
 
-DROP VIEW EMP_DEPT_V;
+/* Удалить представление */
+DROP VIEW SCOTT.EMP_DEPT_V;
