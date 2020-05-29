@@ -59,18 +59,18 @@ SELECT NUMTOYMINTERVAL (TRUNC(months_between(dt2,dt1)),'month')  AS years_months
 --------------- ---------------- ------------------------------ -------------
 1 +000000001-00 12,5622871863799 +000000380 10:20:30.000000000  +000000001-00
 
-
 /* nолучение разности между двумя ТIМЕSТSTAMP (результатом этой операции будет INTERVAL) */
 SELECT SYSTIMESTAMP FROM dual;
 
-SELECT dt2 - dt1
-FROM ( SELECT to_timestamp ('29.02.2000 01:02:03.122000', 'dd.mm.yyyy hh24:mi:ss.ff') AS dt1,
-              to_timestamp ('15.03.2001 11:22:33.000000', 'dd.mm.yyyy hh24:mi:ss.ff') AS dt2
-         FROM dual );
-  DT2-DT1
---------------------------------
-1 +000000380 10:20:29.878000000
+SELECT dt2 - dt1,
+       REGEXP_SUBSTR(dt2 - dt1, '\d{3} \d{2}:\d{2}:\d{2}') AS "Дней Ч:Мин:Сек"
+  FROM ( SELECT to_timestamp ('29.02.2000 01:02:03.122000', 'dd.mm.yyyy hh24:mi:ss.ff') AS dt1,
+                to_timestamp ('15.03.2001 11:22:33.000000', 'dd.mm.yyyy hh24:mi:ss.ff') AS dt2
+           FROM dual );
 
+ 	                    DT2-DT1	 Дней Ч:Мин:Сек
+-----------------------------  --------------
++000000380 10:20:29.878000000	 380 10:20:29
 
 -- Выводим только минуты
 SELECT to_char(SYSDATE,'mi') FROM dual;
