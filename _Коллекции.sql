@@ -3,7 +3,7 @@ DECLARE
   -- Объявление ассоциативного массива.
   TYPE ENAME_TYPE IS TABLE OF SCOTT.EMP.ename%TYPE INDEX BY PLS_INTEGER;
   TYPE LOC_TYPE IS TABLE OF SCOTT.DEPT.loc%TYPE INDEX BY PLS_INTEGER;
-  -- Объявление колллекции на базе типа ENAME_TYPE.
+  -- Объявление колллекции на базе типа.
   t_ename ENAME_TYPE;
   t_loc   LOC_TYPE;
 
