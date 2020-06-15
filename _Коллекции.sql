@@ -1,6 +1,7 @@
 /* Ассоциативный массив */
 DECLARE
   -- Объявление ассоциативного массива.
+	-- где PLS_INTEGER это ключ, а значение = SCOTT.EMP.ename%TYPE
   TYPE ENAME_TYPE IS TABLE OF SCOTT.EMP.ename%TYPE INDEX BY PLS_INTEGER;
   TYPE LOC_TYPE IS TABLE OF SCOTT.DEPT.loc%TYPE INDEX BY PLS_INTEGER;
   -- Объявление колллекции на базе типа.
@@ -35,9 +36,8 @@ BEGIN
   -- Вывод коллекции
   WHILE (l_row IS NOT NULL)
   LOOP
-    dbms_output.put_line(lpad(l_row, 2, ' ')   || ' ' ||
-                         rpad(t_ename(l_row), 7, ' ') || 
-			 t_loc(l_row));
+    dbms_output.put_line(lpad(l_row, 2, ' ') || ' ' ||
+                         rpad(t_ename(l_row), 7, ' ') || t_loc(l_row));
     l_row := t_ename.NEXT(l_row);
   END LOOP;
 END;
