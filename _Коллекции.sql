@@ -1,12 +1,12 @@
 /* Ассоциативный массив */
 DECLARE
-  -- Объявление ассоциативного массива.
-	-- где PLS_INTEGER это ключ, а значение = SCOTT.EMP.ename%TYPE
-  TYPE ENAME_TYPE IS TABLE OF SCOTT.EMP.ename%TYPE INDEX BY PLS_INTEGER;
-  TYPE LOC_TYPE IS TABLE OF SCOTT.DEPT.loc%TYPE INDEX BY PLS_INTEGER;
+  -- Создаем тип ассоциативного массива,
+  -- где ЗНАЧЕНИЕ = SCOTT.EMP.ename%TYPE, а PLS_INTEGER это ключ.
+  TYPE ENAME_T IS TABLE OF SCOTT.EMP.ename%TYPE INDEX BY PLS_INTEGER;
+  TYPE LOC_T   IS TABLE OF SCOTT.DEPT.loc%TYPE  INDEX BY PLS_INTEGER;
   -- Объявление колллекции на базе типа.
-  t_ename ENAME_TYPE;
-  t_loc   LOC_TYPE;
+  l_ename_t ENAME_T;
+  l_loc_t   LOC_T;
 
   l_row PLS_INTEGER;
 
@@ -22,13 +22,13 @@ BEGIN
   -- Заполнение колллекции
   FOR i IN ename_loc_cur
   LOOP
-    t_ename(ename_loc_cur%ROWCOUNT) := i.ename;
+    l_ename_t(ename_loc_cur%ROWCOUNT) := i.ename;
   
-    t_loc(ename_loc_cur%ROWCOUNT) := i.loc;
+    l_loc_t(ename_loc_cur%ROWCOUNT) := i.loc;
   END LOOP;
 
   -- Первый индекс колллекции (1)
-  l_row := t_ename.FIRST;
+  l_row := l_ename_t.FIRST;
 
   dbms_output.put_line(rpad('   ENAME', 10, ' ') || 'LOCATION');
   dbms_output.put_line('-------------------');
@@ -37,8 +37,8 @@ BEGIN
   WHILE (l_row IS NOT NULL)
   LOOP
     dbms_output.put_line(lpad(l_row, 2, ' ') || ' ' ||
-                         rpad(t_ename(l_row), 7, ' ') || t_loc(l_row));
-    l_row := t_ename.NEXT(l_row);
+                         rpad(l_ename_t(l_row), 7, ' ') || l_loc_t(l_row));
+    l_row := l_ename_t.NEXT(l_row);
   END LOOP;
 END;
 
