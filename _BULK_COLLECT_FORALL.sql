@@ -35,6 +35,6 @@ BEGIN
 	 FORALL i IN 1..l_empno_t.COUNT
 	 	UPDATE SCOTT.EMP
 		   SET sal = sal + (sal * .01)
-     WHERE empno = l_empno_t(i);
+     		 WHERE empno = l_empno_t(i);
 	 COMMIT;
 END;
