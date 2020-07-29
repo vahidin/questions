@@ -4,10 +4,10 @@
 */
 BEGIN
   FOR i IN (SELECT empno FROM SCOTT.EMP)
-	LOOP 
+  LOOP 
 	UPDATE SCOTT.EMP
-		 SET sal = sal + (sal * .01)
-   WHERE empno = i.empno;
+	   SET sal = sal + (sal * .01)
+         WHERE empno = i.empno;
 	 dbms_output.put_line (i.empno);
   END LOOP;
   COMMIT;
