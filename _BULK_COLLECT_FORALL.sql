@@ -72,8 +72,8 @@ SELECT t.empno, t.sal, t1.sal AS sal_1, t2.sal AS sal_2
    AND t.empno  = t2.empno
    AND t1.empno = t2.empno;
 	 
-  EMPNO  SAL     SAL_1   SAL_2
--------  ------  ------  ------
+  EMPNO      SAL   SAL_1   SAL_2
+-------  ------- ------- -------
  1 7369   800,00  808,00  816,00
  2 7499  1600,00 1616,00 1632,00
  3 7521  1250,00 1262,50 1275,00
