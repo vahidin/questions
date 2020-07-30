@@ -66,13 +66,13 @@ BEGIN
 END;
 
 /* Проверяем */
-SELECT t.empno, t.sal, t1.sal AS sal_1, t2.sal AS sal2 
+SELECT t.empno, t.sal, t1.sal AS sal_1, t2.sal AS sal_2 
   FROM SCOTT.EMP t, SCOTT.EMP1 t1, SCOTT.EMP2 t2
  WHERE t.empno  = t1.empno
    AND t.empno  = t2.empno
    AND t1.empno = t2.empno;
 	 
-  EMPNO  SAL     SAL_1   SAL2
+  EMPNO  SAL     SAL_1   SAL_2
 -------  ------  ------  ------
  1 7369   800,00  808,00  816,00
  2 7499  1600,00 1616,00 1632,00
