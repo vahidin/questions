@@ -6,7 +6,7 @@ BEGIN
   FOR i IN (SELECT empno FROM SCOTT.EMP)
   LOOP 
 	UPDATE SCOTT.EMP
-	   SET sal = sal + (sal * .01)
+	   SET sal   = sal + (sal * .01)
          WHERE empno = i.empno;
 	 dbms_output.put_line (i.empno);
   END LOOP;
@@ -31,7 +31,7 @@ BEGIN
   -- Конструкция FORALL выполняет весь UPDATE за один раз
   FORALL i IN 1 .. l_empno.COUNT
     UPDATE SCOTT.EMP 
-       SET sal = sal + (sal * .01) 
+       SET sal   = sal + (sal * .01) 
      WHERE empno = l_empno(i);
   COMMIT;
 END;
@@ -57,12 +57,12 @@ BEGIN
 
 	FORALL i IN 1..l_empno.COUNT SAVE EXCEPTIONS
 	UPDATE SCOTT.EMP1
-	   SET sal = l_sal(i) + (l_sal(i) * .01)
+	   SET sal   = l_sal(i) + (l_sal(i) * .01)
 	 WHERE empno = l_empno(i);
 
 	FORALL i IN 1..l_empno.COUNT SAVE EXCEPTIONS	
 	UPDATE SCOTT.EMP2
-	   SET sal = l_sal(i) + (l_sal(i) / .02)  -- здесь будут ОШИБКИ!!!
+	   SET sal   = l_sal(i) + (l_sal(i) / .02)  -- здесь будут ОШИБКИ!!!
 	 WHERE empno = l_empno(i);
 	 
 EXCEPTION
