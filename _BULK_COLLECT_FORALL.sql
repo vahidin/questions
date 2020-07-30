@@ -19,12 +19,31 @@ END;
    Внутри FORALL может быть только одни DML запрос. 
 	 Если нужно несколько запросов, то нужно использовать несколько FORALL
 */
-/* Для двух таблиц */
+DECLARE
+  -- Создаем тип ассоциативного массива,
+  -- где ЗНАЧЕНИЕ = SCOTT.EMP.empno%TYPE, а PLS_INTEGER это ключ.
+  TYPE EMPNO_T IS TABLE OF SCOTT.EMP.empno%TYPE INDEX BY PLS_INTEGER;
+  -- Объявляем переменную l_empno типа EMPNO_T
+  l_empno EMPNO_T;
+BEGIN
+  -- Поместить все записи разом в коллекцию
+  SELECT empno BULK COLLECT INTO l_empno FROM SCOTT.EMP;
+  -- Конструкция FORALL выполняет весь UPDATE за один раз
+  FORALL i IN 1 .. l_empno.COUNT
+    UPDATE SCOTT.EMP 
+       SET sal = sal + (sal * .01) 
+     WHERE empno = l_empno(i);
+  COMMIT;
+END;
+
+
+/* Создаем структуру для обновления двух таблиц */
 CREATE TABLE SCOTT.EMP1 AS (SELECT * FROM SCOTT.EMP);
 CREATE TABLE SCOTT.EMP2 AS (SELECT * FROM SCOTT.EMP);
 --DROP TABLE SCOTT.EMP1 PURGE;
 --DROP TABLE SCOTT.EMP2 PURGE;
 
+/* Обновляем сразу в двух таблицах*/
 DECLARE
   TYPE EMPNO_T IS TABLE OF SCOTT.EMP1.empno%TYPE INDEX BY PLS_INTEGER;
 	TYPE SAL_T   IS TABLE OF SCOTT.EMP1.sal%TYPE;
