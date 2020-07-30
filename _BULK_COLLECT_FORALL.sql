@@ -19,22 +19,53 @@ END;
    Внутри FORALL может быть только одни DML запрос. 
 	 Если нужно несколько запросов, то нужно использовать несколько FORALL
 */
+/* Для двух таблиц */
+CREATE TABLE SCOTT.EMP1 AS (SELECT * FROM SCOTT.EMP);
+CREATE TABLE SCOTT.EMP2 AS (SELECT * FROM SCOTT.EMP);
+--DROP TABLE SCOTT.EMP1 PURGE;
+--DROP TABLE SCOTT.EMP2 PURGE;
+
 DECLARE
-   -- Создаем тип ассоциативного массива,
-   -- где ЗНАЧЕНИЕ = SCOTT.EMP.empno%TYPE, а PLS_INTEGER это ключ.
-	 TYPE EMPNO_T IS TABLE OF SCOTT.EMP.empno%TYPE
-	 INDEX BY PLS_INTEGER;
-	 -- Объявляем переменную l_empno_t типа EMPNO_T
-	 l_empno_t EMPNO_T;
+  TYPE EMPNO_T IS TABLE OF SCOTT.EMP1.empno%TYPE INDEX BY PLS_INTEGER;
+	TYPE SAL_T   IS TABLE OF SCOTT.EMP1.sal%TYPE;
+	l_empno EMPNO_T;
+	l_sal SAL_T;
 BEGIN
-   -- Поместить все записи разом в коллекцию
-	 SELECT empno 
-	   BULK COLLECT INTO l_empno_t
-	   FROM SCOTT.EMP;
-	 -- Конструкция FORALL выполняет весь UPDATE за один раз
-	 FORALL i IN 1..l_empno_t.COUNT
-	 	UPDATE SCOTT.EMP
-		   SET sal = sal + (sal * .01)
-     		 WHERE empno = l_empno_t(i);
-	 COMMIT;
+  SELECT empno, sal BULK COLLECT 
+	  INTO l_empno, l_sal 
+		FROM SCOTT.EMP1;
+
+	FORALL i IN 1..l_empno.COUNT
+	UPDATE SCOTT.EMP1
+	   SET sal = l_sal(i) + (l_sal(i) * .01)
+	 WHERE empno = l_empno(i);
+
+	FORALL i IN 1..l_empno.COUNT	
+	UPDATE SCOTT.EMP2
+	   SET sal = l_sal(i) + (l_sal(i) * .02)
+	 WHERE empno = l_empno(i);
 END;
+
+/* Проверяем */
+SELECT t.empno, t.sal, t1.sal AS sal_1, t2.sal AS sal2 
+  FROM SCOTT.EMP t, SCOTT.EMP1 t1, SCOTT.EMP2 t2
+ WHERE t.empno  = t1.empno
+   AND t.empno  = t2.empno
+   AND t1.empno = t2.empno;
+	 
+  EMPNO  SAL     SAL_1   SAL2
+-------  ------  ------  ------
+ 1 7369   800,00  808,00  816,00
+ 2 7499  1600,00 1616,00 1632,00
+ 3 7521  1250,00 1262,50 1275,00
+ 4 7566  2975,00 3004,75 3034,50
+ 5 7654  1250,00 1262,50 1275,00
+ 6 7698  2850,00 2878,50 2907,00
+ 7 7782  2450,00 2474,50 2499,00
+ 8 7788  3000,00 3030,00 3060,00
+ 9 7839  5000,00 5050,00 5100,00
+10 7844  1500,00 1515,00 1530,00
+11 7876  1100,00 1111,00 1122,00
+12 7900   950,00  959,50  969,00
+13 7902  3000,00 3030,00 3060,00
+14 7934  1300,00 1313,00 1326,00
