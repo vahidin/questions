@@ -64,16 +64,20 @@ BEGIN
   UPDATE SCOTT.EMP2
      SET sal   = l_sal(i) + (l_sal(i) / .02)  -- здесь будут ОШИБКИ!!!
    WHERE empno = l_empno(i);
-   
+
+COMMIT;  
+
 EXCEPTION
    WHEN OTHERS THEN
    dbms_output.put_line(sqlerrm);
    dbms_output.put_line('Number of ERRORS: ' || SQL%BULK_EXCEPTIONS.COUNT);
    FOR i IN 1..SQL%BULK_EXCEPTIONS.COUNT LOOP
-   dbms_output.put_line('Error ' || i || ' occurred during iteration ' || SQL%BULK_EXCEPTIONS(i).ERROR_INDEX);
-         dbms_output.put_line('Oracle error is ' ||SQLERRM(-SQL%BULK_EXCEPTIONS(i).ERROR_CODE));
+      dbms_output.put_line('Error ' || i || ' occurred during iteration ' || SQL%BULK_EXCEPTIONS(i).ERROR_INDEX);
+      dbms_output.put_line('Oracle error is ' ||SQLERRM(-SQL%BULK_EXCEPTIONS(i).ERROR_CODE));
     END LOOP; 
 
+ROLLBACK;
+                                                        
 END;
 
 /*
